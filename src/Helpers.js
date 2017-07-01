@@ -20,13 +20,13 @@ function generateQml(base, props)
     {
         if(props[propname]["type"] === "color")
         {
-            properties += "\t\tproperty " + props[propname]["type"] + " " + propname + ": " +
+			properties += "\t\tproperty " + props[propname]["type"] + " " + toLowerFirstLetter(propname) + ": " +
                     "Qt.rgba(" + props[propname]["value"]["r"] + ", " + props[propname]["value"]["g"] + ", " + props[propname]["value"]["b"] + ", 1)\n";
 
             continue;
         }
 
-        properties += "\t\tproperty " + props[propname]["type"] + " " + propname + ": " +
+		properties += "\t\tproperty " + props[propname]["type"] + " " + toLowerFirstLetter(propname) + ": " +
                 (props[propname]["type"] === "variant"? JSON.stringify(props[propname]["value"]) + '\n': props[propname]["value"] + '\n');
     }
 
@@ -58,6 +58,10 @@ function capitalizeFirstLetter(string)
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function lowerFirstLetter(string)
+{
+	return string.charAt(0).toLowerCase() + string.slice(1);
+}
 /*function drawPath(ctx, currentShape, closed)
 {
 	var xPoints = currentShape["xPoints"];

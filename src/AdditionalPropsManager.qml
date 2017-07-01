@@ -229,7 +229,7 @@ Item
                             if(text === modelData["name"])
                                 return;
 
-                            main_window.imageData["properties"][text] = main_window.imageData["properties"][modelData["name"]];
+							main_window.imageData["properties"][Helpers.lowerFirstLetter(text)] = main_window.imageData["properties"][modelData["name"]];
                             delete main_window.imageData["properties"][modelData["name"]];
                             main_window.updateCauseImageData("canvas");
                             main_window.updateCauseImageData("addPropMan");
@@ -362,15 +362,15 @@ Item
             onClicked:
             {
                 prevIndex = 0;
-                var nameForProp = "Untitled" + untitledPropsCounter;
+				var nameForProp = "untitled" + untitledPropsCounter;
 
                 while(main_window.imageData["properties"].hasOwnProperty(nameForProp))
                 {
                     untitledPropsCounter = (untitledPropsCounter + 1) % maxUntitledCount;
-                    nameForProp = "Untitled" + untitledPropsCounter;
+					nameForProp = "untitled" + untitledPropsCounter;
                 }
 
-                main_window.imageData["properties"]["Untitled" + untitledPropsCounter] = {"type": "variant", "value": 0};
+				main_window.imageData["properties"][nameForProp] = {"type": "variant", "value": 0};
                 main_window.updateCauseImageData("canvas");
                 main_window.updateCauseImageData("addPropMan");
                 untitledPropsCounter = (untitledPropsCounter + 1) % maxUntitledCount;
