@@ -7,7 +7,7 @@ Additionaly, you can give *properties to image*, which will be represented as pr
 
 And also, you can write *functional dependencies* for certain properties of every shape on image. Their main task will be linkage between shapes and image properties.
 
-Read [wiki](https://github.com/alexandrov-va/QVI/wiki) for more info!
+Read [wiki](https://github.com/alexandrov-va/QVI/wiki/Manual) for more info!
 
 **Let's look at example of using of this programm to help you to understand what is it.**
 
