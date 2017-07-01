@@ -34,7 +34,7 @@ function generateQml(base, props)
     {
 		properties += "\t\ton" + capitalizeFirstLetter(propname) + "Changed: {\n";
 		properties += "\t\t\tcanvas.requestPaint();\n"
-		properties += "\t}\n";
+		properties += "\t\t}\n";
     }
 
     var res = base.replace("importingPropsHere", properties);

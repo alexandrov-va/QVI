@@ -100,27 +100,26 @@ importingPropsHere
                     var xPoints = getFunctionResult("xPoints", num);
                     var yPoints = getFunctionResult("yPoints", num);
 
-                    if(closed)
-                    {
-                        xPoints.push(xPoints[0]);
-                        yPoints.push(yPoints[0]);
-                    }
 
                     ctx.beginPath();
 
+                    ctx.moveTo(xPoints[0], yPoints[0]);
                     for(var i = 0; i < xPoints.length; i += 3)
                     {
-                        ctx.moveTo(xPoints[i], yPoints[i]);
                         ctx.bezierCurveTo(xPoints[i + 1], yPoints[i + 1], xPoints[i + 2], yPoints[i + 2], xPoints[i + 3], yPoints[i + 3]);
                     }
 
-                    ctx.stroke();
                     if(closed)
-                        ctx.fill();
+                    {
+                            ctx.lineTo(xPoints[0], yPoints[0]);
+                    }
+
+                    ctx.fill();
+                    ctx.stroke();
                 }
 
-                function drawPoly(ctx, currentShape, closed, num) {
-
+                function drawPoly(ctx, currentShape, closed, num)
+                {
                     var xPoints = getFunctionResult("xPoints", num);
                     var yPoints = getFunctionResult("yPoints", num);
 
@@ -128,8 +127,7 @@ importingPropsHere
 
                     ctx.moveTo(xPoints[0], yPoints[0]);
 
-                    for (var k = 1; k < xPoints.length; ++k)
-                    {
+                    for (var k = 1; k < xPoints.length; ++k) {
                         ctx.lineTo(xPoints[k], yPoints[k]);
                     }
 
@@ -139,10 +137,7 @@ importingPropsHere
                     ctx.moveTo(0, 0);
 
 
-                    if(closed)
-                    {
-                            ctx.fill();
-                    }
+                    ctx.fill();
 
                     ctx.stroke();
                 }
