@@ -6,7 +6,7 @@ import './Helpers.js' as Helpers
 Item
 {
     property variant propertiesArray
-    property int listElementHeight: 40
+	property int listElementHeight: 40
     property int headerHeight: 20
     property int addButtonHeight: 20
     property int untitledPropsCounter: 0
