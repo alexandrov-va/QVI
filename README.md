@@ -34,7 +34,7 @@ To link our recently added property to the hood of a girl, we need to write *fun
 
   a) Enable 'Mark selected shape' in lower section of a window;
 
-  b) Search and select needed shape in ;
+  b) Search and select needed shape in shapes list;
 
   c) Select parameter 'fillPaintColor' in upper-left section of a window;
 
