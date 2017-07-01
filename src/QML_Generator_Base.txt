@@ -1,0 +1,221 @@
+import QtQuick 2.0
+importingJsHere
+
+Canvas
+{
+        id: canvas
+        width: imageData["width"] * scale
+        height: imageData["height"] * scale
+
+        property variant imageData: Image.data
+        property int scale: 1
+        property color backgroundColor: "transparent"
+
+importingPropsHere
+
+        function getProperty(propname)
+        {
+            return canvas[propname];
+        }
+
+        function getFunctionResult(propname, shapeIndex)
+        {
+            var shape = imageData["shapes"][shapeIndex];
+
+            return (shape["functions"][propname] !== "empty")?
+                        (new Function("shapes", "getFunctionResult", "getProperty", "currentShape", shape["functions"][propname]))(imageData["shapes"], getFunctionResult, getProperty, JSON.parse(JSON.stringify(shape)))
+                      : shape[propname];
+        }
+
+        onImageDataChanged:
+        {
+                canvas.requestPaint();
+        }
+
+        onPaint:
+        {
+                var ctx = canvas.getContext('2d');
+
+                //Инициализация
+
+                ctx.reset();
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                ctx.scale(scale, scale);
+                ctx.fillStyle = backgroundColor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                if (imageData == null)
+                        return;
+
+                //Отрисовка
+
+                for(var i = 0; i < imageData["shapes"].length; ++i)
+                {
+                        var num = imageData["order"][i];
+                        var currentShape = imageData["shapes"][num];
+
+                        var opacity = getFunctionResult("opacity", num);
+                        var fillPaintColor = getFunctionResult("fillPaintColor", num);
+                        var strokePaintColor = getFunctionResult("strokePaintColor", num);
+
+                        ctx.lineWidth = currentShape["strokeWidth"];
+                        ctx.strokeStyle = (currentShape["strokePaintType"] === "none" || currentShape["strokeWidth"] === 0) ? "transparent"
+                                        :Qt.rgba(strokePaintColor["r"], strokePaintColor["g"], strokePaintColor["b"], opacity);
+
+                ctx.fillStyle = (currentShape["fillPaintType"] === "none") ? "transparent"
+                          :Qt.rgba(fillPaintColor["r"], fillPaintColor["g"], fillPaintColor["b"], opacity);
+
+                        if(currentShape["type"] == "rect")
+                        {
+                                ctx.beginPath();
+                                drawRect(ctx, currentShape, num);
+                        }
+                        else if(currentShape["type"] == "circle")
+                        {
+                                ctx.beginPath();
+                                drawEllipse(ctx, currentShape, num);
+                        }
+                        else if(currentShape["type"] == "ellipse")
+                        {
+                                ctx.beginPath();
+                                drawEllipse(ctx, currentShape, num);
+                        }
+                        else if(currentShape["type"] == "line")
+                        {
+                                drawLine(ctx, currentShape, num);
+                        }
+                        else if(currentShape["type"] == "polygon")
+                        {
+                            drawPoly(ctx, currentShape, currentShape["isPathClosed"], num);
+                        }
+                        else
+                        {
+                            drawPath(ctx, currentShape, currentShape["isPathClosed"], num);
+                        }
+                }
+
+                function drawPath(ctx, currentShape, closed, num)
+                {
+                    var xPoints = getFunctionResult("xPoints", num);
+                    var yPoints = getFunctionResult("yPoints", num);
+
+                    if(closed)
+                    {
+                        xPoints.push(xPoints[0]);
+                        yPoints.push(yPoints[0]);
+                    }
+
+                    ctx.beginPath();
+
+                    for(var i = 0; i < xPoints.length; i += 3)
+                    {
+                        ctx.moveTo(xPoints[i], yPoints[i]);
+                        ctx.bezierCurveTo(xPoints[i + 1], yPoints[i + 1], xPoints[i + 2], yPoints[i + 2], xPoints[i + 3], yPoints[i + 3]);
+                    }
+
+                    ctx.stroke();
+                    if(closed)
+                        ctx.fill();
+                }
+
+                function drawPoly(ctx, currentShape, closed, num) {
+
+                    var xPoints = getFunctionResult("xPoints", num);
+                    var yPoints = getFunctionResult("yPoints", num);
+
+                    ctx.beginPath();
+
+                    ctx.moveTo(xPoints[0], yPoints[0]);
+
+                    for (var k = 1; k < xPoints.length; ++k)
+                    {
+                        ctx.lineTo(xPoints[k], yPoints[k]);
+                    }
+
+                    if (closed)
+                        ctx.lineTo(xPoints[0], yPoints[0]);
+
+                    ctx.moveTo(0, 0);
+
+
+                    if(closed)
+                    {
+                            ctx.fill();
+                    }
+
+                    ctx.stroke();
+                }
+
+                function drawRect(ctx, rect, num)
+                {
+                        /*var realParams = {};
+                        Helpers.shape_params["rect"].forEach(function(param, i)
+                        {
+                                realParams[param] = (rect["functions"][param] !== "empty")? (new Function("shapes", rect["functions"][param]))(imageData["shapes"]): rect[param];
+                        });*/
+
+                        var cx = getFunctionResult("cx", num);
+                        var cy = getFunctionResult("cy", num);
+                        var width = getFunctionResult("width", num);
+                        var height = getFunctionResult("height", num);
+                        var angle = getFunctionResult("angle", num);
+
+                        ctx.save();
+
+                        ctx.translate(cx, cy);
+                        ctx.rotate(-angle * Math.PI / 180);
+                        ctx.fillRect(-width / 2, -height / 2, width, height);
+                        ctx.strokeRect(-width / 2, -height / 2, width, height);
+
+                        ctx.restore();
+                }
+
+                function drawEllipse(ctx, ellipse, num)
+                {
+                        /*var realParams = {};
+                        Helpers.shape_params["ellipse"].forEach(function(param, i)
+                        {
+                                realParams[param] = (ellipse["functions"][param] !== "empty")? (new Function("shapes", ellipse["functions"][param]))(imageData["shapes"]): ellipse[param];
+                        });*/
+
+                        var cx = getFunctionResult("cx", num);
+                        var cy = getFunctionResult("cy", num);
+                        var rx = getFunctionResult("rx", num);
+                        var ry = getFunctionResult("ry", num);
+                        var angle = getFunctionResult("angle", num);
+
+                        ctx.save();
+
+                        ctx.translate(cx, cy);
+                        ctx.rotate(-angle * Math.PI / 180);
+                        ctx.ellipse(-rx, -ry, rx * 2, ry * 2);
+                        ctx.stroke();
+                        ctx.fill();
+
+                        ctx.restore();
+                }
+
+                function drawLine(ctx, line, num)
+                {
+                        /*var realParams = {};
+                        Helpers.shape_params["line"].forEach(function(param, i)
+                        {
+                                realParams[param] = (line["functions"][param] !== "empty")? (new Function("shapes", line["functions"][param]))(imageData["shapes"]): line[param];
+                        });*/
+
+                        var x1 = getFunctionResult("x1", num);
+                        var y1 = getFunctionResult("y1", num);
+                        var x2 = getFunctionResult("x2", num);
+                        var y2 = getFunctionResult("y2", num);
+
+                        ctx.beginPath();
+
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.moveTo(0, 0);
+
+                        ctx.stroke();
+                }
+        }
+}

@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>MainCanvas.qml</file>
+        <file>Sidebar.qml</file>
+        <file>Helpers.js</file>
+        <file>ShapesList.qml</file>
+        <file>PropertiesList.qml</file>
+        <file>DynamicPropsBar.qml</file>
+        <file>FunctionsManager.qml</file>
+        <file>AdditionalPropsManager.qml</file>
+        <file>Toolbar.qml</file>
+        <file>ColorMenu.qml</file>
+        <file>SettingsBar.qml</file>
+        <file>QML_Generator_Base.txt</file>
+    </qresource>
+</RCC>
